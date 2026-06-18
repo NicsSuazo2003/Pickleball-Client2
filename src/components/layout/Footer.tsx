@@ -1,0 +1,74 @@
+import { Link } from 'react-router-dom';
+import { Zap, MapPin, Phone, Mail } from 'lucide-react';
+
+const appName = import.meta.env.VITE_APP_NAME || 'SideOut Playground';
+
+export default function Footer() {
+  return (
+    <footer className="bg-slate-800 text-slate-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center">
+                <Zap size={16} className="text-teal-800" fill="currentColor" />
+              </div>
+              <span className="text-white font-bold text-lg">{appName}</span>
+            </div>
+            <p className="text-sm text-slate-400 leading-relaxed">
+              Your premier pickleball destination. Book your court, play your game, love the sport.
+            </p>
+            <div className="flex gap-3 mt-4">
+              <a href="#" className="p-2 bg-slate-700 hover:bg-teal-600 rounded-lg transition-colors text-slate-300">
+                IG
+              </a>
+              <a href="#" className="p-2 bg-slate-700 hover:bg-teal-600 rounded-lg transition-colors text-slate-300">
+                FB
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-white font-semibold mb-4">Quick Links</h4>
+            <ul className="space-y-2 text-sm">
+              {[
+                { to: '/', label: 'Home' },
+                { to: '/book', label: 'Book a Court' },
+                { to: '/track', label: 'Track Booking' },
+                { to: '/demo', label: 'Demo' },
+              ].map((link) => (
+                <li key={link.to}>
+                  <Link to={link.to} className="hover:text-teal-400 transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-white font-semibold mb-4">Contact</h4>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-start gap-2">
+                <MapPin size={15} className="text-teal-400 mt-0.5 shrink-0" />
+                <span>123 Sports Complex Dr., City, Philippines</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Phone size={15} className="text-teal-400 shrink-0" />
+                <span>+63 912 345 6789</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Mail size={15} className="text-teal-400 shrink-0" />
+                <span>hello@sideoutplayground.com</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="border-t border-slate-700 mt-10 pt-6 text-center text-sm text-slate-500">
+          &copy; {new Date().getFullYear()} {appName}. All rights reserved.
+        </div>
+      </div>
+    </footer>
+  );
+}
