@@ -16,7 +16,7 @@ export const bookingService = {
 
   uploadPaymentScreenshot: async (id: string, file: File): Promise<Booking> => {
     const formData = new FormData();
-    formData.append('file', file);
+     formData.append('screenshot', file);
     const { data } = await api.post(`/api/bookings/${id}/upload-payment`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
