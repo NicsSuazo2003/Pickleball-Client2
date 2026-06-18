@@ -16,10 +16,8 @@ export const bookingService = {
 
   uploadPaymentScreenshot: async (id: string, file: File): Promise<Booking> => {
     const formData = new FormData();
-     formData.append('screenshot', file);
-    const { data } = await api.post(`/api/bookings/${id}/upload-payment`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    formData.append('screenshot', file);
+    const { data } = await api.post(`/api/bookings/${id}/upload-payment`, formData);
     return data;
   },
 
@@ -48,9 +46,7 @@ export const adminService = {
   uploadFile: async (file: File): Promise<{ url: string }> => {
     const formData = new FormData();
     formData.append('file', file);
-    const { data } = await api.post('/api/files/upload', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const { data } = await api.post('/api/files/upload', formData);
     return data;
   },
 
