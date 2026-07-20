@@ -45,7 +45,7 @@ export const adminService = {
 
   uploadFile: async (file: File): Promise<{ url: string }> => {
     const formData = new FormData();
-    formData.append('screenshot', file);  // ✅ FIXED: Use 'screenshot'
+    formData.append('file', file);  // ✅ Use 'file' for this endpoint
     const { data } = await api.post('/api/files/upload', formData);
     return data;
   },
