@@ -95,29 +95,34 @@ export default function Checkout() {
   };
 
   const handleUpload = async () => {
-    if (!file || !currentBooking) return;
-    setUploading(true);
-    try {
-      console.log('📤 Uploading payment screenshot:', {
-        bookingId: currentBooking.id,
-        file: file.name,
-        size: file.size,
-        type: file.type
-      });
-      
-      const updated = await bookingService.uploadPaymentScreenshot(currentBooking.id, file);
-      setCurrentBooking(updated);
-      setStep(3);
-      toast.success('Payment screenshot uploaded!');
-    } catch (error: any) {
-      console.error('❌ Upload error:', error);
-      console.error('Response:', error.response?.data);
-      const message = error.response?.data?.message || error.response?.data?.title || 'Upload failed. Please try again.';
-      toast.error(message);
-    } finally {
-      setUploading(false);
-    }
-  };
+  if (!file || !currentBooking) return;
+  setUploading(true);
+  try {
+    console.log('📤 Uploading payment screenshot:', {
+      bookingId: currentBooking.id,
+      file: file.name,
+      size: file.size,
+      type: file.type
+    });
+    
+    const updated = await bookingService.uploadPaymentScreenshot(currentBooking.id, file);
+    setCurrentBooking(updated);
+    
+    // ✅ Navigate to success page with booking data
+    navigate('/book/success', { 
+      state: { booking: updated } 
+    });
+    
+    toast.success('Payment uploaded! Your booking is confirmed.');
+  } catch (error: any) {
+    console.error('❌ Upload error:', error);
+    console.error('Response:', error.response?.data);
+    const message = error.response?.data?.message || error.response?.data?.title || 'Upload failed. Please try again.';
+    toast.error(message);
+  } finally {
+    setUploading(false);
+  }
+};
 
   const handleDone = () => {
     navigate('/book/success');

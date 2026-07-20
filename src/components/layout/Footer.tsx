@@ -69,7 +69,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-slate-700 mt-10 pt-6 text-center text-sm text-slate-500">
-          &copy; {new Date().getFullYear()} {appName}. All rights reserved.
+          &copy; {new Date().getFullYear()} {appName}. All rights reserved. Astravex Systems
         </div>
       </div>
     </footer>
