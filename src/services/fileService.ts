@@ -3,10 +3,10 @@ import api from './api';
 export async function uploadImage(file: File): Promise<string> {
   const formData = new FormData();
   formData.append('file', file);
-  const { data } = await api.post<{ url: string }>('/files/upload', formData);
+  const { data } = await api.post<{ url: string }>('/api/files/upload', formData);
   return data.url;
 }
 
 export async function deleteImage(url: string): Promise<void> {
-  await api.delete('/files', { data: { url } });
+  await api.delete('/api/files', { data: { url } });
 }
