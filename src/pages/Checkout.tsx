@@ -74,16 +74,46 @@ export default function Checkout() {
     }
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
+    
+    // Validate file size (5MB max)
+    if (selectedFile.size > 5 * 1024 * 1024) {
+      toast.error('File too large. Max size is 5MB.');
+      return;
+    }
+    
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(selectedFile.type)) {
+      toast.error('Please upload a valid image (JPEG, PNG, GIF, or WebP).');
+      return;
+    }
+    
+    setFile(selectedFile);
+  };
+
   const handleUpload = async () => {
     if (!file || !currentBooking) return;
     setUploading(true);
     try {
+      console.log('📤 Uploading payment screenshot:', {
+        bookingId: currentBooking.id,
+        file: file.name,
+        size: file.size,
+        type: file.type
+      });
+      
       const updated = await bookingService.uploadPaymentScreenshot(currentBooking.id, file);
       setCurrentBooking(updated);
       setStep(3);
       toast.success('Payment screenshot uploaded!');
-    } catch {
-      toast.error('Upload failed. Please try again.');
+    } catch (error: any) {
+      console.error('❌ Upload error:', error);
+      console.error('Response:', error.response?.data);
+      const message = error.response?.data?.message || error.response?.data?.title || 'Upload failed. Please try again.';
+      toast.error(message);
     } finally {
       setUploading(false);
     }
@@ -281,7 +311,7 @@ export default function Checkout() {
                   type="file"
                   accept="image/*"
                   className="hidden"
-                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                  onChange={handleFileSelect}
                 />
                 {file ? (
                   <div className="space-y-2">

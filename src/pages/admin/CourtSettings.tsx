@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Upload, Trash2, Plus, Save, Image, CalendarX } from 'lucide-react';
 import { courtService } from '../../services/courtService';
-import { adminService } from '../../services/bookingService';
+import { uploadImage, deleteImage } from '../../services/fileService';
 import type { Court, BlockedDate } from '../../types';
 import { formatTime } from '../../utils/format';
 import Button from '../../components/ui/Button';
@@ -66,7 +66,7 @@ export default function CourtSettings() {
     if (!file || !court) return;
     setUploadingImage(true);
     try {
-      const { url } = await adminService.uploadFile(file);
+      const url = await uploadImage(file);
       setCourt((c) => c ? { ...c, images: [...c.images, url], imageUrl: c.imageUrl || url } : c);
       toast.success('Image uploaded');
     } catch {
@@ -80,7 +80,7 @@ export default function CourtSettings() {
   const handleDeleteImage = async (url: string) => {
     if (!court) return;
     try {
-      await adminService.deleteFile(url);
+      await deleteImage(url);
       setCourt((c) =>
         c ? {
           ...c,
