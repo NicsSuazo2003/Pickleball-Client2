@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Calendar, Clock, User, ChevronRight, CheckCircle, X } from 'lucide-react';
+import { Calendar, Clock, User, ChevronRight, CheckCircle, X, Star } from 'lucide-react';
 import { courtService } from '../services/courtService';
 import { useBookingStore } from '../stores/bookingStore';
 import type { TimeSlot } from '../types';
@@ -31,7 +31,35 @@ export default function Booking() {
   useEffect(() => {
     setLoadingSlots(true);
     courtService.getAvailability(selectedDate)
-      .then(setSlots)
+      .then((fetchedSlots) => {
+        // ✅ Remove 4-5 PM and 5-6 PM slots
+        let filteredSlots = fetchedSlots.filter(s => 
+          !(s.startTime === '16:00' && s.endTime === '17:00') &&
+          !(s.startTime === '17:00' && s.endTime === '18:00')
+        );
+        
+        // ✅ Add fixed 4-6 PM slot if it doesn't exist
+        const has4to6 = filteredSlots.some(s => 
+          s.startTime === '16:00' && s.endTime === '18:00'
+        );
+        
+        let allSlots = filteredSlots;
+        if (!has4to6) {
+          const fixedSlot: TimeSlot = {
+            id: `fixed-${selectedDate}-16-18`,
+            date: selectedDate,
+            startTime: '16:00',
+            endTime: '18:00',
+            isAvailable: true,
+            price: 200,
+          };
+          allSlots = [...filteredSlots, fixedSlot];
+        }
+        
+        // ✅ Sort by time
+        allSlots.sort((a, b) => a.startTime.localeCompare(b.startTime));
+        setSlots(allSlots);
+      })
       .catch(() => setSlots([]))
       .finally(() => setLoadingSlots(false));
   }, [selectedDate]);
@@ -46,6 +74,11 @@ export default function Booking() {
       notes: data.notes ?? '',
     });
     navigate('/book/checkout');
+  };
+
+  // Check if a slot is the fixed 4-6 PM slot
+  const isFixedSlot = (slot: TimeSlot) => {
+    return slot.startTime === '16:00' && slot.endTime === '18:00';
   };
 
   return (
@@ -140,24 +173,33 @@ export default function Booking() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                       {slots.map((slot) => {
                         const selected = selectedSlots.some((s) => s.id === slot.id);
+                        const fixed = isFixedSlot(slot);
                         return (
                           <motion.button
                             key={slot.id}
                             whileTap={{ scale: 0.97 }}
                             onClick={() => slot.isAvailable && toggleSlot(slot)}
                             disabled={!slot.isAvailable}
-                            className={`rounded-xl p-3 text-left border-2 transition-all ${
+                            className={`rounded-xl p-3 text-left border-2 transition-all relative ${
                               !slot.isAvailable
                                 ? 'bg-slate-50 border-slate-100 text-slate-300 cursor-not-allowed'
                                 : selected
                                 ? 'bg-teal-600 border-teal-600 text-white shadow-md shadow-teal-600/20'
+                                : fixed
+                                ? 'bg-amber-50 border-amber-400 text-slate-700 hover:border-amber-500 hover:shadow-sm'
                                 : 'bg-white border-slate-200 text-slate-700 hover:border-teal-300 hover:shadow-sm'
                             }`}
                           >
-                            <p className={`text-xs font-medium mb-1 ${selected ? 'text-teal-100' : 'text-slate-500'}`}>
+                            {/* ✅ "2hr Fixed" badge */}
+                            {fixed && (
+                              <span className="absolute top-1 right-1 flex items-center gap-1 bg-amber-400 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                                <Star size={10} fill="currentColor" /> 2hr Fixed
+                              </span>
+                            )}
+                            <p className={`text-xs font-medium mb-1 ${selected ? 'text-teal-100' : fixed ? 'text-amber-600' : 'text-slate-500'}`}>
                               {formatTimeRange(slot.startTime, slot.endTime)}
                             </p>
-                            <p className={`text-sm font-semibold ${selected ? 'text-white' : slot.isAvailable ? 'text-teal-600' : 'text-slate-300'}`}>
+                            <p className={`text-sm font-semibold ${selected ? 'text-white' : slot.isAvailable ? fixed ? 'text-amber-600' : 'text-teal-600' : 'text-slate-300'}`}>
                               {slot.isAvailable ? formatCurrency(slot.price) : 'Booked'}
                             </p>
                             {selected && (
@@ -250,24 +292,34 @@ export default function Booking() {
                 <p className="text-sm text-slate-400 text-center py-6">No slots selected yet.</p>
               ) : (
                 <div className="space-y-3 mb-4">
-                  {selectedSlots.map((slot) => (
-                    <div key={slot.id} className="flex items-center justify-between gap-2">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-slate-700 font-medium">
-                          {formatTimeRange(slot.startTime, slot.endTime)}
-                        </p>
+                  {selectedSlots.map((slot) => {
+                    const fixed = isFixedSlot(slot);
+                    return (
+                      <div key={slot.id} className="flex items-center justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-sm font-medium ${fixed ? 'text-amber-600' : 'text-slate-700'}`}>
+                            {formatTimeRange(slot.startTime, slot.endTime)}
+                            {fixed && (
+                              <span className="ml-1.5 text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-medium">
+                                2hr Fixed
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`text-sm font-semibold ${fixed ? 'text-amber-600' : 'text-teal-600'}`}>
+                            {formatCurrency(slot.price)}
+                          </span>
+                          <button
+                            onClick={() => toggleSlot(slot)}
+                            className="p-1 text-slate-300 hover:text-red-400 rounded-lg transition-colors"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-teal-600">{formatCurrency(slot.price)}</span>
-                        <button
-                          onClick={() => toggleSlot(slot)}
-                          className="p-1 text-slate-300 hover:text-red-400 rounded-lg transition-colors"
-                        >
-                          <X size={14} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
 
