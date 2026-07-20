@@ -224,7 +224,7 @@ export default function Landing() {
                   <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-md">
                     <div className="flex items-center gap-2">
                       <MapPin size={14} className="text-teal-600" />
-                      <span className="text-sm font-medium text-slate-700">Sports Complex, City</span>
+                      <span className="text-sm font-medium text-slate-700">Purok Million, Dawis, Tandag City</span>
                     </div>
                   </div>
                 </div>
