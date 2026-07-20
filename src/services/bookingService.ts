@@ -45,8 +45,8 @@ export const adminService = {
 
   uploadFile: async (file: File): Promise<{ url: string }> => {
     const formData = new FormData();
-    formData.append('file', file);  // ✅ Use 'file' for this endpoint
-    const { data } = await api.post('/api/files/upload', formData);
+    formData.append('file', file);
+    const { data } = await api.post('/api/files/upload', formData);  // ✅ No Content-Type header
     return data;
   },
 
