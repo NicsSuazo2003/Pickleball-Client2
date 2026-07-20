@@ -30,15 +30,24 @@ export default function Booking() {
 
   useEffect(() => {
     setLoadingSlots(true);
-    courtService.getAvailability(selectedDate)
-      .then((fetchedSlots) => {
+    
+    // ✅ Fetch both court settings and availability
+    Promise.all([
+      courtService.getCourt(),
+      courtService.getAvailability(selectedDate)
+    ])
+      .then(([courtData, fetchedSlots]) => {
+        // ✅ Get base price from court settings (fallback to 150)
+        const basePrice = courtData?.pricePerHour || 150;
+        const twoHourPrice = basePrice * 2; // ✅ Dynamic 2-hour price
+        
         // ✅ Remove 4-5 PM and 5-6 PM slots
         let filteredSlots = fetchedSlots.filter(s => 
           !(s.startTime === '16:00' && s.endTime === '17:00') &&
           !(s.startTime === '17:00' && s.endTime === '18:00')
         );
         
-        // ✅ Add fixed 4-6 PM slot if it doesn't exist
+        // ✅ Add fixed 4-6 PM slot with dynamic price
         const has4to6 = filteredSlots.some(s => 
           s.startTime === '16:00' && s.endTime === '18:00'
         );
@@ -51,7 +60,7 @@ export default function Booking() {
             startTime: '16:00',
             endTime: '18:00',
             isAvailable: true,
-            price: 200,
+            price: twoHourPrice, // ✅ Dynamic – updates with court settings
           };
           allSlots = [...filteredSlots, fixedSlot];
         }
