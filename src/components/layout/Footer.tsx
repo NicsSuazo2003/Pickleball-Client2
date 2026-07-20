@@ -51,15 +51,15 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-2">
                 <MapPin size={15} className="text-teal-400 mt-0.5 shrink-0" />
-                <span>123 Sports Complex Dr., City, Philippines</span>
+                <span>Purok Million, Barangay San Agustin Sur (DAWIS), Tandag City</span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone size={15} className="text-teal-400 shrink-0" />
-                <span>+63 912 345 6789</span>
+                <span>09561853355 | 09058100973</span>
               </li>
               <li className="flex items-center gap-2">
                 <Mail size={15} className="text-teal-400 shrink-0" />
-                <span>hello@sideoutplayground.com</span>
+                <span>nicssuazo@gmail.com</span>
               </li>
             </ul>
           </div>

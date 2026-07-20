@@ -10,7 +10,7 @@ const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/book', label: 'Book Now' },
   { to: '/track', label: 'Track Booking' },
-  { to: '/demo', label: 'Demo' },
+  
 ];
 
 export default function Navbar() {
