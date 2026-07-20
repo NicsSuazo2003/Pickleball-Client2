@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Zap } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { motion, AnimatePresence } from 'framer-motion';
+import logo from '../../assets/logo.png'; // ✅ Import the logo
 
 const appName = import.meta.env.VITE_APP_NAME || 'SideOut Playground';
 
@@ -10,7 +11,6 @@ const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/book', label: 'Book Now' },
   { to: '/track', label: 'Track Booking' },
-  
 ];
 
 export default function Navbar() {
@@ -36,9 +36,12 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 text-white font-bold text-lg">
-            <div className="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center">
-              <Zap size={16} className="text-teal-800" fill="currentColor" />
-            </div>
+            {/* ✅ Logo Image */}
+            <img 
+              src={logo} 
+              alt="SideOut Playground Logo" 
+              className="w-8 h-8 object-contain rounded-lg"
+            />
             <span className="hidden sm:block">{appName}</span>
             <span className="sm:hidden">SideOut</span>
           </Link>

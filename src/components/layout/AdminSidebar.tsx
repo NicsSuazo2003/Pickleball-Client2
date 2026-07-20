@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Calendar, Users, Settings, BarChart3, Tag,
-  LogOut, Menu, X, Zap, ChevronRight,
+  LogOut, Menu, X, ChevronRight,
 } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { motion, AnimatePresence } from 'framer-motion';
+import logo from '../../assets/logo.png'; // ✅ Import the logo
 
 const appName = import.meta.env.VITE_APP_NAME || 'SideOut Playground';
 
@@ -32,9 +33,12 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
     <div className="flex flex-col h-full bg-slate-800 text-slate-300">
       <div className="px-5 py-5 border-b border-slate-700/60 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center">
-            <Zap size={16} className="text-teal-800" fill="currentColor" />
-          </div>
+          {/* ✅ Logo Image */}
+          <img 
+            src={logo} 
+            alt="SideOut Playground Logo" 
+            className="w-8 h-8 object-contain rounded-lg"
+          />
           <span className="text-white font-bold text-sm">{appName}</span>
         </Link>
         {onClose && (

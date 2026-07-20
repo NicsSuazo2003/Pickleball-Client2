@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Zap, MapPin, Phone, Mail } from 'lucide-react';
+import { MapPin, Phone, Mail } from 'lucide-react';
+import logo from '../../assets/logo.png'; // ✅ Import the logo
 
 const appName = import.meta.env.VITE_APP_NAME || 'SideOut Playground';
 
@@ -10,9 +11,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center">
-                <Zap size={16} className="text-teal-800" fill="currentColor" />
-              </div>
+              {/* ✅ Logo Image */}
+              <img 
+                src={logo} 
+                alt="SideOut Playground Logo" 
+                className="w-8 h-8 object-contain rounded-lg"
+              />
               <span className="text-white font-bold text-lg">{appName}</span>
             </div>
             <p className="text-sm text-slate-400 leading-relaxed">
@@ -35,7 +39,6 @@ export default function Footer() {
                 { to: '/', label: 'Home' },
                 { to: '/book', label: 'Book a Court' },
                 { to: '/track', label: 'Track Booking' },
-                { to: '/demo', label: 'Demo' },
               ].map((link) => (
                 <li key={link.to}>
                   <Link to={link.to} className="hover:text-teal-400 transition-colors">
