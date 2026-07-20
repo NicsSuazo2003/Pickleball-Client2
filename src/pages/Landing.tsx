@@ -10,6 +10,7 @@ import type { Court, TimeSlot } from '../types';
 import { formatTime, formatCurrency, formatTimeRange } from '../utils/format';
 import Button from '../components/ui/Button';
 import StarRating from '../components/ui/StarRating';
+import logo from '../assets/logo.png'; // ✅ Import the logo
 
 const TODAY = new Date().toISOString().split('T')[0];
 
@@ -63,9 +64,17 @@ export default function Landing() {
             transition={{ duration: 0.6 }}
             className="max-w-2xl"
           >
-            <span className="inline-flex items-center gap-1.5 bg-amber-400/20 text-amber-200 border border-amber-400/30 px-3 py-1 rounded-full text-sm font-medium mb-6">
-              <Zap size={13} fill="currentColor" /> Now Open for Bookings
-            </span>
+            {/* ✅ Logo Badge */}
+            <div className="flex items-center gap-3 mb-6">
+              <img 
+                src={logo} 
+                alt="SideOut Playground Logo" 
+                className="w-12 h-12 object-contain rounded-xl bg-white/10 p-2"
+              />
+              <span className="inline-flex items-center gap-1.5 bg-amber-400/20 text-amber-200 border border-amber-400/30 px-3 py-1 rounded-full text-sm font-medium">
+                <Zap size={13} fill="currentColor" /> Now Open for Bookings
+              </span>
+            </div>
             <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
               Book Your<br />
               <span className="text-amber-300">Pickleball Court</span><br />
